@@ -38,7 +38,7 @@ body{margin:0;-webkit-text-size-adjust:100%}
   --bg:#050608; --surface:#101318; --fg:#E8EBF1; --muted:#8B93A5; --line:#1F242D;
   --warn:#FF7A70; --note:#E8A94B; --note-soft:#21180A; color-scheme:dark}
 :root[data-theme="light"]{color-scheme:light}
-:root{--live:var(--fg); --live-soft:color-mix(in srgb,var(--fg) 26%,transparent); --past-soft:color-mix(in srgb,var(--muted) 24%,transparent)}
+:root{--live:var(--fg);--live-soft:color-mix(in srgb,var(--fg) 26%,transparent);--past-soft:color-mix(in srgb,var(--muted) 24%,transparent);--ios:cubic-bezier(.32,.72,0,1)}
 
 html,body{background:var(--bg)}
 body{color:var(--fg);font-family:var(--font-b);font-size:15px;line-height:1.4;-webkit-tap-highlight-color:transparent;
@@ -79,7 +79,7 @@ h1{font-family:var(--font-d);font-weight:700;font-size:28px;line-height:1.1;marg
 .day.has-note.sel{box-shadow:inset 0 0 0 1.5px var(--note)}
 
 /* Карточка пары */
-.list{display:flex;flex-direction:column;gap:10px}
+.list{display:flex;flex-direction:column;gap:10px;touch-action:pan-y}
 .lesson{position:relative;display:grid;grid-template-columns:62px 1fr;gap:12px;background:var(--surface);border-radius:16px;padding:14px;border:1px solid var(--line)}
 .lesson.now{border-color:var(--live);box-shadow:0 0 0 1px var(--live)}
 .past{opacity:.45}
@@ -94,8 +94,6 @@ h1{font-family:var(--font-d);font-weight:700;font-size:28px;line-height:1.1;marg
 .t-lec{border-color:var(--muted)}
 .t-prac{background:var(--fg);color:var(--bg)}
 .t-mix{border-color:var(--fg)}
-.t-other{border:1px dashed var(--muted);color:var(--muted)}
-.t-new{background:var(--live-soft)}
 .subj{font-weight:600;font-size:16px;line-height:1.3;margin:0;overflow-wrap:anywhere}
 .who{color:var(--muted);font-size:14px;overflow-wrap:anywhere}
 .room{font-family:var(--font-m);font-size:13px}
@@ -169,12 +167,10 @@ h1{font-family:var(--font-d);font-weight:700;font-size:28px;line-height:1.1;marg
 
 /* Окна снизу и диалог */
 .sheet{position:fixed;inset:0;z-index:20;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.55)}
-.panel{background:var(--surface);width:100%;max-width:560px;max-height:85%;border-radius:20px 20px 0 0;box-sizing:border-box;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:12px;
+.panel{touch-action:none;background:var(--surface);width:100%;max-width:560px;max-height:85%;border-radius:20px 20px 0 0;box-sizing:border-box;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:12px;
   padding:18px max(16px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
 .panel::before{content:"";flex:none;width:36px;height:5px;border-radius:3px;background:var(--line);align-self:center;margin:-8px 0 0}
-.panel{touch-action:none}
 .panel textarea{touch-action:auto}
-.list{touch-action:pan-y}
 .panel h2{font-family:var(--font-d);font-weight:500;font-size:19px;margin:0;line-height:1.25;overflow-wrap:anywhere}
 .nsub{color:var(--muted);font-size:14px;margin-top:4px}
 #ntext{font:inherit;font-size:16px;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px;width:100%;box-sizing:border-box;min-height:140px;resize:vertical}
@@ -215,7 +211,6 @@ h1{font-family:var(--font-d);font-weight:700;font-size:28px;line-height:1.1;marg
 .seg button[aria-pressed="true"]{background:var(--fg);color:var(--bg);font-weight:600}
 
 /* Анимации: мягкая кривая как в iOS */
-:root{--ios:cubic-bezier(.32,.72,0,1)}
 @media (prefers-reduced-motion: no-preference){
   @keyframes inR{from{opacity:0;transform:translateX(24px)}}
   @keyframes inL{from{opacity:0;transform:translateX(-24px)}}
@@ -330,7 +325,7 @@ h1{font-family:var(--font-d);font-weight:700;font-size:28px;line-height:1.1;marg
 // Неделя с понедельника 19.10.2026 = "под чертой", дальше чередуется
 var ANCHOR = new Date(2026,9,19);
 // Звонки по приказу от 08.10.2026: пара 40 мин + 5 мин перерыв + 40 мин
-var PAIRS = [null,["9:35","11:00"],["11:10","12:35"],["13:05","14:30"],["14:40","16:05"],["16:35","18:00"],["18:10","19:35"],["19:45","21:10"]];
+var PAIRS = [null,["9:35","11:00"],["11:10","12:35"],["13:05","14:30"],["14:40","16:05"]];
 
 var FK = "Физическая культура";
 var PR = "Правовое регулирование общественных отношений";
@@ -340,7 +335,7 @@ var TV = "Теория вероятностей и математическая 
 var OPD = "Основы предпринимательской деятельности";
 var FKT = "ст. пр. Зыкун Ж. А. (257-4), ст. пр. Володкович Е. В. (257-5)";
 
-// d: 0=Пн; p: номер пары (1 = 9:35, 2 = 11:10 ...); w: all/over/under (над чертой = числитель, под чертой = знаменатель); t: lec/prac/mix/other
+// d: 0=Пн; p: номер пары (1 = 9:35, 2 = 11:10 ...); w: all/over/under (над чертой = числитель, под чертой = знаменатель); t: lec/prac/mix
 var LESSONS = [
  // Понедельник
  {d:0,p:1,w:"all",  s:PR, t:"prac", tch:"пр. Козарь Д. А.", r:"3-5"},
@@ -368,7 +363,7 @@ var LESSONS = [
 ];
 
 // ---------- Справочники ----------
-var DSHORT=["Пн","Вт","Ср","Чт","Пт","Сб"];
+var DSHORT=["Пн","Вт","Ср","Чт","Пт"];
 var DAYS_FULL=["Воскресенье","Понедельник","Вторник","Среда","Четверг","Пятница","Суббота"];
 var WHEN=["В воскресенье","В понедельник","Во вторник","В среду","В четверг","В пятницу","В субботу"];
 var MON=["янв","фев","мар","апр","мая","июн","июл","авг","сен","окт","ноя","дек"];
@@ -397,15 +392,15 @@ var DAYS_N=5; // учёба с понедельника по пятницу
 function studyDay(d){var x=day0(d),w=x.getDay();return w===6?addDays(x,2):w===0?addDays(x,1):x;} // выходные -> понедельник
 function fmtRange(mon){var sat=addDays(mon,DAYS_N-1);
   return mon.getMonth()===sat.getMonth()?mon.getDate()+"-"+sat.getDate()+" "+MONF[mon.getMonth()]:mon.getDate()+" "+MON[mon.getMonth()]+" - "+sat.getDate()+" "+MON[sat.getMonth()];}
-function span(l){return [toMin(PAIRS[l.p][0]),toMin(PAIRS[l.p][1])];}
 
-var BYDAY=[[],[],[],[],[],[]];
-LESSONS.forEach(function(l){BYDAY[l.d].push(l);});
+// Время начала и конца пары в минутах считаем один раз при запуске
+var BYDAY=[[],[],[],[],[]];
+LESSONS.forEach(function(l){l.a=toMin(PAIRS[l.p][0]);l.b=toMin(PAIRS[l.p][1]);BYDAY[l.d].push(l);});
 BYDAY.forEach(function(a){a.sort(function(x,y){return x.p-y.p;});});
 function lessonsFor(d){
   var wd=(d.getDay()+6)%7; if(wd>=DAYS_N)return [];
-  var wt=weekType(d), k=key(d);
-  return BYDAY[wd].filter(function(l){return (l.w==="all"||l.w===wt)&&(!l.from||k>=l.from);});
+  var wt=weekType(d);
+  return BYDAY[wd].filter(function(l){return l.w==="all"||l.w===wt;});
 }
 
 // ---------- Хранилище ----------
@@ -425,13 +420,14 @@ indexNotes();
 function dayHasNote(d){return !!noteDays[key(d)];}
 
 // ---------- Общие куски разметки ----------
-function tagHtml(l){return l.t==="lec"?'<span class="tag t-lec">Лекция</span>':l.t==="prac"?'<span class="tag t-prac">Практика</span>':l.t==="mix"?'<span class="tag t-mix">Лекция/Практика</span>':'<span class="tag t-other">Другое</span>';}
+var TAGS={lec:'<span class="tag t-lec">Лекция</span>',prac:'<span class="tag t-prac">Практика</span>',mix:'<span class="tag t-mix">Лекция/Практика</span>'};
+function tagHtml(l){return TAGS[l.t]||"";}
 function pairBar(s,e,m){ // 40 мин, перерыв 5 мин, 40 мин
   var h1=s+40,h2=s+45, f1=Math.min(1,(m-s)/40), fb=m<h1?0:Math.min(1,(m-h1)/5), f2=m<h2?0:(m-h2)/(e-h2);
   var pc=function(f){return Math.round(Math.max(0,f)*100)+"%";};
   return {h1:h1,h2:h2,html:'<div class="bar2"><span class="seg" style="flex:40"><i style="width:'+pc(f1)+'"></i></span><span class="seg brk" style="flex:5"><i style="width:'+pc(fb)+'"></i></span><span class="seg" style="flex:'+(e-h2)+'"><i style="width:'+pc(f2)+'"></i></span></div>'};
 }
-function isBig(a,b){return b.p-a.p===1&&span(b)[0]-span(a)[1]>=25;}
+function isBig(a,b){return b.p-a.p===1&&b.a-a.b>=25;}
 function noteAttrs(d,l){return ' data-k="'+esc(noteKey(d,l))+'" data-t="'+esc(l.s)+'" data-p="'+l.p+'" data-d="'+d.getTime()+'"';}
 function stagger(el,cls){
   el.classList.remove("enter-l","enter-r","enter-up");
@@ -442,10 +438,10 @@ function stagger(el,cls){
 // ---------- Полное расписание ----------
 var sel=studyDay(new Date()), lastSel=null;
 
-function gapHtml(kind,gs,ge,ref){
-  var t=new Date(), m=nowMin(t), td=day0(t).getTime(), sd=sel.getTime();
-  var on=sd===td&&m>=gs&&m<ge, past=sd<td||(sd===td&&m>=ge);
-  var fill=sd<td?100:sd>td?0:Math.max(0,Math.min(100,(m-gs)/(ge-gs)*100));
+// cmp: выбранный день раньше сегодня (-1), сегодня (0), позже (1)
+function gapHtml(kind,gs,ge,m,cmp){
+  var on=cmp===0&&m>=gs&&m<ge, past=cmp<0||(cmp===0&&m>=ge);
+  var fill=cmp<0?100:cmp>0?0:Math.max(0,Math.min(100,(m-gs)/(ge-gs)*100));
   var cls=(on?" on":"")+(past?" past":""), f='<span class="fill" style="width:'+fill.toFixed(1)+'%"></span>';
   if(kind==="small")return '<div class="pm'+cls+'">'+f+'<span class="pm-l">'+dur(ge-gs)+'</span><span>'+(on?"Перерыв, ещё "+dur(ge-m):"Перерыв")+'</span></div>';
   if(kind==="big")return '<div class="big'+cls+'">'+f+'<span class="big-i">'+I_CUP+'</span><div class="big-b"><div class="big-r"><b>Большой перерыв</b><span>'+(on?"ещё "+dur(ge-m):dur(ge-gs))+'</span></div><div class="big-s">'+fmtMin(gs)+' - '+fmtMin(ge)+'</div></div></div>';
@@ -453,9 +449,8 @@ function gapHtml(kind,gs,ge,ref){
 }
 
 function lessonCard(l,isToday,m){
-  var se=span(l), s=se[0], e=se[1], isNow=isToday&&m>=s&&m<e, isPast=isToday&&m>=e;
-  var nt=noteOf(sel,l), hn=!!nt, nw="", prog="";
-  if(l.from&&l.from===key(sel)){var fd=new Date(l.from+"T00:00");nw='<span class="tag t-new">с '+fd.getDate()+' '+MON[fd.getMonth()]+'</span>';}
+  var s=l.a, e=l.b, isNow=isToday&&m>=s&&m<e, isPast=isToday&&m>=e;
+  var nt=noteOf(sel,l), hn=!!nt, prog="";
   if(isNow){
     var b=pairBar(s,e,m);
     prog=b.html+'<div class="left">'+(m<b.h1?"До перерыва "+dur(b.h1-m):m<b.h2?"До конца перерыва "+dur(b.h2-m):"До конца пары осталось "+dur(e-m))+'</div>';
@@ -463,7 +458,7 @@ function lessonCard(l,isToday,m){
   return '<article class="lesson'+(isNow?" now":"")+(isPast&&!hn?" past":"")+(hn?" has-note":"")+'">'
     +(canNote(l)?'<button class="pen"'+noteAttrs(sel,l)+' aria-label="'+(hn?"Открыть заметку":"Добавить заметку")+'">'+I_PEN+'</button>':'')
     +'<div class="time"><span class="pn">'+l.p+' пара</span><b>'+PAIRS[l.p][0]+'</b><span>'+PAIRS[l.p][1]+'</span></div>'
-    +'<div class="body"><div class="tags">'+tagHtml(l)+nw+'</div>'
+    +'<div class="body"><div class="tags">'+tagHtml(l)+'</div>'
     +'<p class="subj">'+esc(l.s)+'</p>'
     +(l.tch?'<div class="who">'+esc(l.tch)+'</div>':'')
     +(l.r?'<div class="room"><small>ауд. </small>'+esc(l.r)+'</div>':'')
@@ -484,16 +479,14 @@ function renderFull(){
   }
   $("days").innerHTML=dh;
 
-  var list=lessonsFor(sel), isToday=sel.getTime()===today.getTime(), h="";
+  var list=lessonsFor(sel), cmp=sel<today?-1:sel>today?1:0, isToday=cmp===0, h="";
   if(!list.length){
     h='<div class="empty"><b>Пар нет</b>'+DAYS_FULL[sel.getDay()]+', '+sel.getDate()+' '+MONF[sel.getMonth()]+'</div>';
   }else{
     list.forEach(function(l,i){
       var p=i?list[i-1]:null;
       if(p){
-        if(l.p-p.p>1)h+=gapHtml("window",span(p)[1],span(l)[0]);
-        else if(isBig(p,l))h+=gapHtml("big",span(p)[1],span(l)[0]);
-        else h+=gapHtml("small",span(p)[1],span(l)[0]);
+        h+=gapHtml(l.p-p.p>1?"window":isBig(p,l)?"big":"small",p.b,l.a,m,cmp);
       }
       h+=lessonCard(l,isToday,m);
     });
@@ -526,12 +519,12 @@ function renderHome(anim){
   var h='<div class="h-date"><div class="h-day"><span class="eyebrow">Сегодня · '+(td.getDay()===0?"с завтра ":td.getDay()===6?"с понедельника ":"")+weekName(studyDay(t))+'</span><b>'+DAYS_FULL[td.getDay()]+', '+td.getDate()+' '+MONF[td.getMonth()]+'</b></div>'
     +'<button class="iconbtn" data-act="settings" aria-label="Настройки">'+I_GEAR+'</button></div>';
   var cur=null,next=null,prev=null;
-  list.forEach(function(l){var se=span(l);
-    if(m>=se[0]&&m<se[1])cur=l; else if(se[0]>m){if(!next)next=l;} else prev=l;});
+  list.forEach(function(l){
+    if(m>=l.a&&m<l.b)cur=l; else if(l.a>m){if(!next)next=l;} else prev=l;});
 
   if(cur){
-    var se=span(cur), b=pairBar(se[0],se[1],m);
-    var big=m<b.h1?[b.h1-m,"до перерыва"]:m<b.h2?[b.h2-m,"до конца перерыва"]:[se[1]-m,"до конца пары"];
+    var b=pairBar(cur.a,cur.b,m);
+    var big=m<b.h1?[b.h1-m,"до перерыва"]:m<b.h2?[b.h2-m,"до конца перерыва"]:[cur.b-m,"до конца пары"];
     h+='<div class="h-state live"><i></i>Идёт '+cur.p+' пара</div>'+lessonHead(cur)
       +'<div class="h-count"><div class="h-big"><b>'+dur(big[0])+'</b><span>'+big[1]+'</span></div>'+b.html
       +'<div class="h-times"><span>'+PAIRS[cur.p][0]+'</span><span>'+PAIRS[cur.p][1]+'</span></div></div>'
@@ -539,7 +532,7 @@ function renderHome(anim){
     var rest=list.filter(function(l){return l.p>cur.p;});
     if(rest.length)h+=sec("Дальше сегодня",rows(rest,td));
   }else if(next){
-    var ns=span(next)[0], from=prev?span(prev)[1]:null;
+    var ns=next.a, from=prev?prev.b:null;
     var label=!prev?"До первой пары":isBig(prev,next)?"Большой перерыв":next.p-prev.p>1?"Окно":"Перерыв";
     var pc=from!==null?Math.max(0,Math.min(100,(m-from)/(ns-from)*100)):0;
     h+='<div class="h-state"><i></i>'+label+'</div>'
@@ -710,10 +703,11 @@ $("days").addEventListener("click",function(e){
   sel=addDays(mondayOf(sel),+b.dataset.i); renderFull();
 });
 // Свайп влево и вправо по списку пар листает дни
+var swiping=false;
 function shiftDay(n){var d=addDays(sel,n);while((d.getDay()+6)%7>=DAYS_N)d=addDays(d,n);sel=d;renderFull();}
 (function(){
   var el=$("list"), x0=null, y0=0, dx=0, lock=null;
-  el.addEventListener("touchstart",function(e){x0=e.touches[0].clientX;y0=e.touches[0].clientY;dx=0;lock=null;el.style.transition="none";},{passive:true});
+  el.addEventListener("touchstart",function(e){swiping=true;x0=e.touches[0].clientX;y0=e.touches[0].clientY;dx=0;lock=null;el.style.transition="none";},{passive:true});
   el.addEventListener("touchmove",function(e){
     if(x0===null)return;
     var mx=e.touches[0].clientX-x0, my=e.touches[0].clientY-y0;
@@ -722,7 +716,7 @@ function shiftDay(n){var d=addDays(sel,n);while((d.getDay()+6)%7>=DAYS_N)d=addDa
     dx=mx; el.style.transform="translateX("+dx*.4+"px)"; el.style.opacity=String(1-Math.min(.5,Math.abs(dx)/500));
   },{passive:true});
   function end(){
-    if(x0===null)return; x0=null;
+    swiping=false; if(x0===null)return; x0=null;
     if(lock==="x"&&Math.abs(dx)>60){el.style.transition="";el.style.transform="";el.style.opacity="";shiftDay(dx<0?1:-1);}
     else{el.style.transition="transform .4s var(--ios),opacity .4s var(--ios)";el.style.transform="";el.style.opacity="";}
   }
@@ -735,7 +729,7 @@ $("toToday").onclick=function(){sel=studyDay(new Date());renderFull();};
 // Старт и автообновление
 applyTheme();
 show(settings.ui==="old"?"full":"home");
-function quiet(){return document.querySelectorAll(".sheet:not([hidden])").length===0;}
+function quiet(){return !swiping&&!document.querySelector(".sheet:not([hidden]),.cdlg:not([hidden])");}
 // Таймер работает только пока приложение на экране, ровно в начале каждой минуты
 var timer=null;
 function tick(){clearTimeout(timer);if(document.hidden)return;
