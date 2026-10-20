@@ -1,0 +1,13 @@
+{
+  "name": "Пары 2576-ЭБ",
+  "short_name": "Пары",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#050608",
+  "theme_color": "#050608",
+  "lang": "ru",
+  "icons": [
+    {"src": "icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any"}
+  ]
+}
