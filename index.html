@@ -65,6 +65,7 @@ h1{font-family:var(--font-d);font-weight:700;font-size:28px;line-height:1.1;marg
 .weeknav{display:flex;align-items:center;gap:4px}
 .navbtn{width:36px;height:36px;border-radius:10px;font-size:22px;line-height:1;color:var(--muted)}
 .navbtn:active{background:var(--surface)}
+.navbtn:disabled{opacity:.25;cursor:default;background:none}
 .range{flex:1;text-align:center;font-weight:600;font-variant-numeric:tabular-nums}
 .today{height:36px;padding:0 12px;border-radius:10px;background:var(--surface);border:1px solid var(--line);font-weight:600}
 .days{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
@@ -324,6 +325,8 @@ h1{font-family:var(--font-d);font-weight:700;font-size:28px;line-height:1.1;marg
 "use strict";
 // Неделя с понедельника 19.10.2026 = "под чертой", дальше чередуется
 var ANCHOR = new Date(2026,9,19);
+// Расписание действует по 25.12.2026 включительно, дальше пар нет
+var LAST = new Date(2026,11,25);
 // Звонки по приказу от 08.10.2026: пара 40 мин + 5 мин перерыв + 40 мин
 var PAIRS = [null,["9:35","11:00"],["11:10","12:35"],["13:05","14:30"],["14:40","16:05"]];
 
@@ -398,7 +401,7 @@ var BYDAY=[[],[],[],[],[]];
 LESSONS.forEach(function(l){l.a=toMin(PAIRS[l.p][0]);l.b=toMin(PAIRS[l.p][1]);BYDAY[l.d].push(l);});
 BYDAY.forEach(function(a){a.sort(function(x,y){return x.p-y.p;});});
 function lessonsFor(d){
-  var wd=(d.getDay()+6)%7; if(wd>=DAYS_N)return [];
+  var wd=(d.getDay()+6)%7; if(wd>=DAYS_N||d>LAST)return [];
   var wt=weekType(d);
   return BYDAY[wd].filter(function(l){return l.w==="all"||l.w===wt;});
 }
@@ -448,8 +451,9 @@ function gapHtml(kind,gs,ge,m,cmp){
   return '<div class="gap'+cls+'"><span>Окно '+dur(ge-gs)+(on?", ещё "+dur(ge-m):"")+'</span></div>';
 }
 
-function lessonCard(l,isToday,m){
-  var s=l.a, e=l.b, isNow=isToday&&m>=s&&m<e, isPast=isToday&&m>=e;
+// cmp: выбранный день раньше сегодня (-1), сегодня (0), позже (1)
+function lessonCard(l,cmp,m){
+  var s=l.a, e=l.b, isNow=cmp===0&&m>=s&&m<e, isPast=cmp<0||(cmp===0&&m>=e);
   var nt=noteOf(sel,l), hn=!!nt, prog="";
   if(isNow){
     var b=pairBar(s,e,m);
@@ -479,7 +483,7 @@ function renderFull(){
   }
   $("days").innerHTML=dh;
 
-  var list=lessonsFor(sel), cmp=sel<today?-1:sel>today?1:0, isToday=cmp===0, h="";
+  var list=lessonsFor(sel), cmp=sel<today?-1:sel>today?1:0, h="";
   if(!list.length){
     h='<div class="empty"><b>Пар нет</b>'+DAYS_FULL[sel.getDay()]+', '+sel.getDate()+' '+MONF[sel.getMonth()]+'</div>';
   }else{
@@ -488,7 +492,7 @@ function renderFull(){
       if(p){
         h+=gapHtml(l.p-p.p>1?"window":isBig(p,l)?"big":"small",p.b,l.a,m,cmp);
       }
-      h+=lessonCard(l,isToday,m);
+      h+=lessonCard(l,cmp,m);
     });
   }
   var el=$("list"), sk=sel.getTime();
@@ -544,7 +548,7 @@ function renderHome(anim){
   }else{
     var nd=null,nl=[];
     for(var i=1;i<=14&&!nd;i++){var d=addDays(td,i),ll=lessonsFor(d);if(ll.length){nd=d;nl=ll;}}
-    h+='<p class="h-done">'+(list.length?"Пары на сегодня закончились":"Сегодня пар нет")+'</p>';
+    h+='<p class="h-done">'+(list.length?"Пары на сегодня закончились":td>LAST?"Расписание закончилось 25 декабря":"Сегодня пар нет")+'</p>';
     if(nd){
       var dd=Math.round((nd-td)/864e5);
       var lbl=dd===1?"Завтра":dd===2?"Послезавтра":WHEN[nd.getDay()]+", "+nd.getDate()+" "+MONF[nd.getMonth()];
@@ -634,6 +638,7 @@ function glyph(t){return '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true
 function renderCal(dir){
   var today=day0(new Date()), first=new Date(cMonth.getFullYear(),cMonth.getMonth(),1), m=mondayOf(first), sm=mondayOf(sel).getTime();
   $("wt").textContent=MONN[first.getMonth()]+" "+first.getFullYear();
+  $("cnext").disabled=first>=LASTM;
   var h=["Пн","Вт","Ср","Чт","Пт","Сб","Вс",""].map(function(x){return '<div class="h">'+x+'</div>';}).join("");
   for(var r=0;r<6;r++){
     h+='<div class="cal-wk'+(m.getTime()===sm?" sel":"")+'">';
@@ -649,8 +654,11 @@ function renderCal(dir){
 }
 function pick(d){sel=d;closeSheet("wsheet");renderFull();}
 $("mark").innerHTML=I_CAL;
-$("mark").onclick=function(){cMonth=new Date(sel.getFullYear(),sel.getMonth(),1);renderCal();openSheet("wsheet");};
-function goMonth(d){var n=new Date(d.getFullYear(),d.getMonth(),1), dir=n-cMonth; cMonth=n; renderCal(dir>0?1:dir<0?-1:0);}
+// Календарь не листается дальше месяца, в котором кончается расписание
+var LASTM=new Date(LAST.getFullYear(),LAST.getMonth(),1);
+function monthOf(d){var n=new Date(d.getFullYear(),d.getMonth(),1);return n>LASTM?new Date(LASTM):n;}
+$("mark").onclick=function(){cMonth=monthOf(sel);renderCal();openSheet("wsheet");};
+function goMonth(d){var n=monthOf(d), dir=n-cMonth; cMonth=n; renderCal(dir>0?1:dir<0?-1:0);}
 $("cprev").onclick=function(){goMonth(new Date(cMonth.getFullYear(),cMonth.getMonth()-1,1));};
 $("cnext").onclick=function(){goMonth(new Date(cMonth.getFullYear(),cMonth.getMonth()+1,1));};
 $("ctoday").onclick=function(){
