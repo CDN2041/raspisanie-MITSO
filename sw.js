@@ -1,5 +1,5 @@
 // Офлайн-режим: сначала сеть (чтобы приходили обновления), без сети берём из кэша
-var CACHE = "pary-2576-v5";
+var CACHE = "pary-2576-v6";
 var CORE = ["./", "index.html", "manifest.webmanifest", "icon.png"];
 self.addEventListener("install", function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(CORE); }).then(function () { return self.skipWaiting(); }));
@@ -13,7 +13,7 @@ self.addEventListener("fetch", function (e) {
   if (e.request.method !== "GET") return;
   e.respondWith(
     fetch(e.request).then(function (r) {
-      if (r && (r.ok || r.type === "opaque")) { var copy = r.clone(); caches.open(CACHE).then(function (c) { c.put(e.request, copy); }); }
+      if (r && (r.status === 200 || r.type === "opaque")) { var copy = r.clone(); caches.open(CACHE).then(function (c) { c.put(e.request, copy); }); }
       return r;
     }).catch(function () {
       return caches.match(e.request, { ignoreSearch: true }).then(function (m) { return m || caches.match("./"); });
