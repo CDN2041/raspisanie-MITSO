@@ -330,8 +330,8 @@ h1{font-family:var(--font-d);font-weight:700;font-size:28px;line-height:1.1;marg
 "use strict";
 // Неделя с понедельника 19.10.2026 = "под чертой", дальше чередуется
 var ANCHOR = new Date(2026,9,19);
-var PAIRS = [null,["9:45","11:05"],["11:15","12:35"],["13:05","14:25"],["14:35","15:55"]];
-var BIG = ["12:35","13:05"];
+// Звонки по приказу от 08.10.2026: пара 40 мин + 5 мин перерыв + 40 мин
+var PAIRS = [null,["8:00","9:25"],["9:35","11:00"],["11:10","12:35"],["13:05","14:30"],["14:40","16:05"],["16:35","18:00"],["18:10","19:35"],["19:45","21:10"]];
 
 var FK = "Физическая культура";
 var PR = "Правовое регулирование общественных отношений";
@@ -341,31 +341,31 @@ var TV = "Теория вероятностей и математическая 
 var OPD = "Основы предпринимательской деятельности";
 var FKT = "ст. пр. Зыкун Ж. А. (257-4), ст. пр. Володкович Е. В. (257-5)";
 
-// d: 0=Пн; p: номер пары; w: all/over/under (над чертой = числитель, под чертой = знаменатель); t: lec/prac/mix/other
+// d: 0=Пн; p: номер пары по звонкам (1 = 8:00, 2 = 9:35 ...); w: all/over/under (над чертой = числитель, под чертой = знаменатель); t: lec/prac/mix/other
 var LESSONS = [
  // Понедельник
- {d:0,p:1,w:"all",  s:PR, t:"prac", tch:"пр. Козарь Д. А.", r:"3-5"},
- {d:0,p:2,w:"all",  s:MAC, t:"mix", tch:"доц. Сиротко Ю. С.", r:"1-1"},
- {d:0,p:3,w:"all",  s:"Риторика и презентация проектов", t:"mix", tch:"ст. пр. Данченко А. В.", r:"1-1"},
- {d:0,p:4,w:"all",  s:"Психология и этика деловых отношений и коммуникаций", t:"mix", tch:"ст. пр. Любочко Н. А.", r:"2-1"},
+ {d:0,p:2,w:"all",  s:PR, t:"prac", tch:"пр. Козарь Д. А.", r:"3-5"},
+ {d:0,p:3,w:"all",  s:MAC, t:"mix", tch:"доц. Сиротко Ю. С.", r:"1-1"},
+ {d:0,p:4,w:"all",  s:"Риторика и презентация проектов", t:"mix", tch:"ст. пр. Данченко А. В.", r:"1-1"},
+ {d:0,p:5,w:"all",  s:"Психология и этика деловых отношений и коммуникаций", t:"mix", tch:"ст. пр. Любочко Н. А.", r:"2-1"},
  // Вторник
- {d:1,p:3,w:"all",  s:FK, t:"prac", tch:FKT, r:"3-10, 3-11"},
  {d:1,p:4,w:"all",  s:FK, t:"prac", tch:FKT, r:"3-10, 3-11"},
+ {d:1,p:5,w:"all",  s:FK, t:"prac", tch:FKT, r:"3-10, 3-11"},
  // Среда
- {d:2,p:1,w:"under",s:EI, t:"lec", tch:"ст. пр. Емельянченко Я. В.", r:"2-3"},
- {d:2,p:2,w:"all",  s:MAC, t:"mix", tch:"доц. Сиротко Ю. С.", r:"3-2"},
- {d:2,p:3,w:"all",  s:TV, t:"mix", tch:"проф. Тютянов В. Н.", r:"3-4"},
- {d:2,p:4,w:"all",  s:EI, t:"prac", tch:"ст. пр. Емельянченко Я. В.", r:"3-1"},
+ {d:2,p:2,w:"under",s:EI, t:"lec", tch:"ст. пр. Емельянченко Я. В.", r:"2-3"},
+ {d:2,p:3,w:"all",  s:MAC, t:"mix", tch:"доц. Сиротко Ю. С.", r:"3-2"},
+ {d:2,p:4,w:"all",  s:TV, t:"mix", tch:"проф. Тютянов В. Н.", r:"3-4"},
+ {d:2,p:5,w:"all",  s:EI, t:"prac", tch:"ст. пр. Емельянченко Я. В.", r:"3-1"},
  // Четверг
- {d:3,p:1,w:"all",  s:EI, t:"mix", tch:"ст. пр. Емельянченко Я. В.", r:"3-1"},
- {d:3,p:2,w:"over", s:TV, t:"prac", tch:"проф. Тютянов В. Н.", r:"3-4"},
- {d:3,p:2,w:"under",s:OPD, t:"lec", tch:"ст. пр. Сенько И. В.", r:"3-4"},
- {d:3,p:3,w:"all",  s:PR, t:"lec", tch:"ст. пр. Луц Е. В.", r:"Актовый зал"},
+ {d:3,p:2,w:"all",  s:EI, t:"mix", tch:"ст. пр. Емельянченко Я. В.", r:"3-1"},
+ {d:3,p:3,w:"over", s:TV, t:"prac", tch:"проф. Тютянов В. Н.", r:"3-4"},
+ {d:3,p:3,w:"under",s:OPD, t:"lec", tch:"ст. пр. Сенько И. В.", r:"3-4"},
+ {d:3,p:4,w:"all",  s:PR, t:"lec", tch:"ст. пр. Луц Е. В.", r:"Актовый зал"},
  // Пятница
- {d:4,p:2,w:"over", s:OPD, t:"prac", tch:"ст. пр. Сенько И. В.", r:"2-3"},
- {d:4,p:2,w:"under",s:TV, t:"mix", tch:"проф. Тютянов В. Н.", r:"3-4"},
- {d:4,p:3,w:"all",  s:"История профсоюзного движения", t:"mix", tch:"ст. пр. Любочко Н. А.", r:"4-2"},
- {d:4,p:4,w:"all",  s:"Социология", t:"mix", tch:"ст. пр. Любочко Н. А.", r:"4-2"}
+ {d:4,p:3,w:"over", s:OPD, t:"prac", tch:"ст. пр. Сенько И. В.", r:"2-3"},
+ {d:4,p:3,w:"under",s:TV, t:"mix", tch:"проф. Тютянов В. Н.", r:"3-4"},
+ {d:4,p:4,w:"all",  s:"История профсоюзного движения", t:"mix", tch:"ст. пр. Любочко Н. А.", r:"4-2"},
+ {d:4,p:5,w:"all",  s:"Социология", t:"mix", tch:"ст. пр. Любочко Н. А.", r:"4-2"}
 ];
 
 // ---------- Справочники ----------
@@ -426,10 +426,12 @@ function dayHasNote(d){return !!noteDays[key(d)];}
 
 // ---------- Общие куски разметки ----------
 function tagHtml(l){return l.t==="lec"?'<span class="tag t-lec">Лекция</span>':l.t==="prac"?'<span class="tag t-prac">Практика</span>':l.t==="mix"?'<span class="tag t-mix">Лекция + практика</span>':'<span class="tag t-other">Другое</span>';}
-function pairBar(s,e,m){ // пара 80 минут без перерыва внутри
-  var f=Math.max(0,Math.min(1,(m-s)/(e-s)));
-  return {h1:-1,h2:-1,html:'<div class="bar2"><span class="seg" style="flex:1"><i style="width:'+Math.round(f*100)+'%"></i></span></div>'};
+function pairBar(s,e,m){ // 40 мин, перерыв 5 мин, 40 мин
+  var h1=s+40,h2=s+45, f1=Math.min(1,(m-s)/40), fb=m<h1?0:Math.min(1,(m-h1)/5), f2=m<h2?0:(m-h2)/(e-h2);
+  var pc=function(f){return Math.round(Math.max(0,f)*100)+"%";};
+  return {h1:h1,h2:h2,html:'<div class="bar2"><span class="seg" style="flex:40"><i style="width:'+pc(f1)+'"></i></span><span class="seg brk" style="flex:5"><i style="width:'+pc(fb)+'"></i></span><span class="seg" style="flex:'+(e-h2)+'"><i style="width:'+pc(f2)+'"></i></span></div>'};
 }
+function isBig(a,b){return b.p-a.p===1&&span(b)[0]-span(a)[1]>=25;}
 function noteAttrs(d,l){return ' data-k="'+esc(noteKey(d,l))+'" data-t="'+esc(l.s)+'" data-p="'+l.p+'" data-d="'+d.getTime()+'"';}
 function stagger(el,cls){
   el.classList.remove("enter-l","enter-r","enter-up");
@@ -490,7 +492,7 @@ function renderFull(){
       var p=i?list[i-1]:null;
       if(p){
         if(l.p-p.p>1)h+=gapHtml("window",span(p)[1],span(l)[0]);
-        else if(p.p===2&&l.p===3)h+=gapHtml("big",toMin(BIG[0]),toMin(BIG[1]));
+        else if(isBig(p,l))h+=gapHtml("big",span(p)[1],span(l)[0]);
         else h+=gapHtml("small",span(p)[1],span(l)[0]);
       }
       h+=lessonCard(l,isToday,m);
@@ -538,7 +540,7 @@ function renderHome(anim){
     if(rest.length)h+=sec("Дальше сегодня",rows(rest,td));
   }else if(next){
     var ns=span(next)[0], from=prev?span(prev)[1]:null;
-    var label=!prev?"До первой пары":(prev.p===2&&next.p===3)?"Большой перерыв":next.p-prev.p>1?"Окно":"Перерыв";
+    var label=!prev?"До первой пары":isBig(prev,next)?"Большой перерыв":next.p-prev.p>1?"Окно":"Перерыв";
     var pc=from!==null?Math.max(0,Math.min(100,(m-from)/(ns-from)*100)):0;
     h+='<div class="h-state"><i></i>'+label+'</div>'
       +'<div class="h-count"><div class="h-big"><b>'+dur(ns-m)+'</b><span>до '+next.p+' пары</span></div>'
