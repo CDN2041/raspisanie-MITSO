@@ -67,7 +67,7 @@ h1{font-family:var(--font-d);font-weight:700;font-size:28px;line-height:1.1;marg
 .navbtn:active{background:var(--surface)}
 .range{flex:1;text-align:center;font-weight:600;font-variant-numeric:tabular-nums}
 .today{height:36px;padding:0 12px;border-radius:10px;background:var(--surface);border:1px solid var(--line);font-weight:600}
-.days{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.days{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
 .day{position:relative;border-radius:12px;padding:8px 0 7px;display:flex;flex-direction:column;align-items:center;gap:2px}
 .day .dn{font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
 .day .dd{font-family:var(--font-m);font-weight:700;font-size:17px;font-variant-numeric:tabular-nums;color:color-mix(in srgb,var(--fg) 75%,transparent)}
@@ -252,7 +252,6 @@ h1{font-family:var(--font-d);font-weight:700;font-size:28px;line-height:1.1;marg
 </style>
 </head>
 <body>
-
 <div class="app">
   <section class="view" id="home" hidden></section>
 
@@ -331,7 +330,7 @@ h1{font-family:var(--font-d);font-weight:700;font-size:28px;line-height:1.1;marg
 // Неделя с понедельника 19.10.2026 = "под чертой", дальше чередуется
 var ANCHOR = new Date(2026,9,19);
 // Звонки по приказу от 08.10.2026: пара 40 мин + 5 мин перерыв + 40 мин
-var PAIRS = [null,["8:00","9:25"],["9:35","11:00"],["11:10","12:35"],["13:05","14:30"],["14:40","16:05"],["16:35","18:00"],["18:10","19:35"],["19:45","21:10"]];
+var PAIRS = [null,["9:35","11:00"],["11:10","12:35"],["13:05","14:30"],["14:40","16:05"],["16:35","18:00"],["18:10","19:35"],["19:45","21:10"]];
 
 var FK = "Физическая культура";
 var PR = "Правовое регулирование общественных отношений";
@@ -341,31 +340,31 @@ var TV = "Теория вероятностей и математическая 
 var OPD = "Основы предпринимательской деятельности";
 var FKT = "ст. пр. Зыкун Ж. А. (257-4), ст. пр. Володкович Е. В. (257-5)";
 
-// d: 0=Пн; p: номер пары по звонкам (1 = 8:00, 2 = 9:35 ...); w: all/over/under (над чертой = числитель, под чертой = знаменатель); t: lec/prac/mix/other
+// d: 0=Пн; p: номер пары (1 = 9:35, 2 = 11:10 ...); w: all/over/under (над чертой = числитель, под чертой = знаменатель); t: lec/prac/mix/other
 var LESSONS = [
  // Понедельник
- {d:0,p:2,w:"all",  s:PR, t:"prac", tch:"пр. Козарь Д. А.", r:"3-5"},
- {d:0,p:3,w:"all",  s:MAC, t:"mix", tch:"доц. Сиротко Ю. С.", r:"1-1"},
- {d:0,p:4,w:"all",  s:"Риторика и презентация проектов", t:"mix", tch:"ст. пр. Данченко А. В.", r:"1-1"},
- {d:0,p:5,w:"all",  s:"Психология и этика деловых отношений и коммуникаций", t:"mix", tch:"ст. пр. Любочко Н. А.", r:"2-1"},
+ {d:0,p:1,w:"all",  s:PR, t:"prac", tch:"пр. Козарь Д. А.", r:"3-5"},
+ {d:0,p:2,w:"all",  s:MAC, t:"mix", tch:"доц. Сиротко Ю. С.", r:"1-1"},
+ {d:0,p:3,w:"all",  s:"Риторика и презентация проектов", t:"mix", tch:"ст. пр. Данченко А. В.", r:"1-1"},
+ {d:0,p:4,w:"all",  s:"Психология и этика деловых отношений и коммуникаций", t:"mix", tch:"ст. пр. Любочко Н. А.", r:"2-1"},
  // Вторник
+ {d:1,p:3,w:"all",  s:FK, t:"prac", tch:FKT, r:"3-10, 3-11"},
  {d:1,p:4,w:"all",  s:FK, t:"prac", tch:FKT, r:"3-10, 3-11"},
- {d:1,p:5,w:"all",  s:FK, t:"prac", tch:FKT, r:"3-10, 3-11"},
  // Среда
- {d:2,p:2,w:"under",s:EI, t:"lec", tch:"ст. пр. Емельянченко Я. В.", r:"2-3"},
- {d:2,p:3,w:"all",  s:MAC, t:"mix", tch:"доц. Сиротко Ю. С.", r:"3-2"},
- {d:2,p:4,w:"all",  s:TV, t:"mix", tch:"проф. Тютянов В. Н.", r:"3-4"},
- {d:2,p:5,w:"all",  s:EI, t:"prac", tch:"ст. пр. Емельянченко Я. В.", r:"3-1"},
+ {d:2,p:1,w:"under",s:EI, t:"lec", tch:"ст. пр. Емельянченко Я. В.", r:"2-3"},
+ {d:2,p:2,w:"all",  s:MAC, t:"mix", tch:"доц. Сиротко Ю. С.", r:"3-2"},
+ {d:2,p:3,w:"all",  s:TV, t:"mix", tch:"проф. Тютянов В. Н.", r:"3-4"},
+ {d:2,p:4,w:"all",  s:EI, t:"prac", tch:"ст. пр. Емельянченко Я. В.", r:"3-1"},
  // Четверг
- {d:3,p:2,w:"all",  s:EI, t:"mix", tch:"ст. пр. Емельянченко Я. В.", r:"3-1"},
- {d:3,p:3,w:"over", s:TV, t:"prac", tch:"проф. Тютянов В. Н.", r:"3-4"},
- {d:3,p:3,w:"under",s:OPD, t:"lec", tch:"ст. пр. Сенько И. В.", r:"3-4"},
- {d:3,p:4,w:"all",  s:PR, t:"lec", tch:"ст. пр. Луц Е. В.", r:"Актовый зал"},
+ {d:3,p:1,w:"all",  s:EI, t:"mix", tch:"ст. пр. Емельянченко Я. В.", r:"3-1"},
+ {d:3,p:2,w:"over", s:TV, t:"prac", tch:"проф. Тютянов В. Н.", r:"3-4"},
+ {d:3,p:2,w:"under",s:OPD, t:"lec", tch:"ст. пр. Сенько И. В.", r:"3-4"},
+ {d:3,p:3,w:"all",  s:PR, t:"lec", tch:"ст. пр. Луц Е. В.", r:"Актовый зал"},
  // Пятница
- {d:4,p:3,w:"over", s:OPD, t:"prac", tch:"ст. пр. Сенько И. В.", r:"2-3"},
- {d:4,p:3,w:"under",s:TV, t:"mix", tch:"проф. Тютянов В. Н.", r:"3-4"},
- {d:4,p:4,w:"all",  s:"История профсоюзного движения", t:"mix", tch:"ст. пр. Любочко Н. А.", r:"4-2"},
- {d:4,p:5,w:"all",  s:"Социология", t:"mix", tch:"ст. пр. Любочко Н. А.", r:"4-2"}
+ {d:4,p:2,w:"over", s:OPD, t:"prac", tch:"ст. пр. Сенько И. В.", r:"2-3"},
+ {d:4,p:2,w:"under",s:TV, t:"mix", tch:"проф. Тютянов В. Н.", r:"3-4"},
+ {d:4,p:3,w:"all",  s:"История профсоюзного движения", t:"mix", tch:"ст. пр. Любочко Н. А.", r:"4-2"},
+ {d:4,p:4,w:"all",  s:"Социология", t:"mix", tch:"ст. пр. Любочко Н. А.", r:"4-2"}
 ];
 
 // ---------- Справочники ----------
@@ -394,8 +393,9 @@ function fmtMin(x){return Math.floor(x/60)+":"+(x%60<10?"0":"")+x%60;}
 function dur(m){var h=Math.floor(m/60),mm=m%60;return h?(h+" ч"+(mm?" "+mm+" мин":"")):mm+" мин";}
 function nowMin(t){return t.getHours()*60+t.getMinutes();}
 function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
-function studyDay(d){var x=day0(d);return x.getDay()===0?addDays(x,1):x;} // воскресенье -> понедельник
-function fmtRange(mon){var sat=addDays(mon,5);
+var DAYS_N=5; // учёба с понедельника по пятницу
+function studyDay(d){var x=day0(d),w=x.getDay();return w===6?addDays(x,2):w===0?addDays(x,1):x;} // выходные -> понедельник
+function fmtRange(mon){var sat=addDays(mon,DAYS_N-1);
   return mon.getMonth()===sat.getMonth()?mon.getDate()+"-"+sat.getDate()+" "+MONF[mon.getMonth()]:mon.getDate()+" "+MON[mon.getMonth()]+" - "+sat.getDate()+" "+MON[sat.getMonth()];}
 function span(l){return [toMin(PAIRS[l.p][0]),toMin(PAIRS[l.p][1])];}
 
@@ -403,7 +403,7 @@ var BYDAY=[[],[],[],[],[],[]];
 LESSONS.forEach(function(l){BYDAY[l.d].push(l);});
 BYDAY.forEach(function(a){a.sort(function(x,y){return x.p-y.p;});});
 function lessonsFor(d){
-  var wd=(d.getDay()+6)%7; if(wd>5)return [];
+  var wd=(d.getDay()+6)%7; if(wd>=DAYS_N)return [];
   var wt=weekType(d), k=key(d);
   return BYDAY[wd].filter(function(l){return (l.w==="all"||l.w===wt)&&(!l.from||k>=l.from);});
 }
@@ -425,7 +425,7 @@ indexNotes();
 function dayHasNote(d){return !!noteDays[key(d)];}
 
 // ---------- Общие куски разметки ----------
-function tagHtml(l){return l.t==="lec"?'<span class="tag t-lec">Лекция</span>':l.t==="prac"?'<span class="tag t-prac">Практика</span>':l.t==="mix"?'<span class="tag t-mix">Лекция + практика</span>':'<span class="tag t-other">Другое</span>';}
+function tagHtml(l){return l.t==="lec"?'<span class="tag t-lec">Лекция</span>':l.t==="prac"?'<span class="tag t-prac">Практика</span>':l.t==="mix"?'<span class="tag t-mix">Лекция/Практика</span>':'<span class="tag t-other">Другое</span>';}
 function pairBar(s,e,m){ // 40 мин, перерыв 5 мин, 40 мин
   var h1=s+40,h2=s+45, f1=Math.min(1,(m-s)/40), fb=m<h1?0:Math.min(1,(m-h1)/5), f2=m<h2?0:(m-h2)/(e-h2);
   var pc=function(f){return Math.round(Math.max(0,f)*100)+"%";};
@@ -477,7 +477,7 @@ function renderFull(){
   $("range").textContent=fmtRange(mon);
 
   var dh="";
-  for(var i=0;i<6;i++){
+  for(var i=0;i<DAYS_N;i++){
     var d=addDays(mon,i), c=lessonsFor(d).length;
     dh+='<button class="day'+(d.getTime()===sel.getTime()?" sel":"")+(d.getTime()===today.getTime()?" is-today":"")+(dayHasNote(d)?" has-note":"")
       +'" data-i="'+i+'" aria-label="'+DAYS_FULL[d.getDay()]+', '+d.getDate()+'"><span class="dn">'+DSHORT[i]+'</span><span class="dd">'+d.getDate()+'</span><span class="cnt">'+(c?c+" п.":"·")+'</span></button>';
@@ -523,7 +523,7 @@ function sec(title,inner){return '<div class="h-sec"><h3>'+title+'</h3>'+(inner|
 
 function renderHome(anim){
   var t=new Date(), td=day0(t), m=nowMin(t), list=lessonsFor(td);
-  var h='<div class="h-date"><div class="h-day"><span class="eyebrow">Сегодня · '+(td.getDay()===0?"с завтра ":"")+weekName(studyDay(t))+'</span><b>'+DAYS_FULL[td.getDay()]+', '+td.getDate()+' '+MONF[td.getMonth()]+'</b></div>'
+  var h='<div class="h-date"><div class="h-day"><span class="eyebrow">Сегодня · '+(td.getDay()===0?"с завтра ":td.getDay()===6?"с понедельника ":"")+weekName(studyDay(t))+'</span><b>'+DAYS_FULL[td.getDay()]+', '+td.getDate()+' '+MONF[td.getMonth()]+'</b></div>'
     +'<button class="iconbtn" data-act="settings" aria-label="Настройки">'+I_GEAR+'</button></div>';
   var cur=null,next=null,prev=null;
   list.forEach(function(l){var se=span(l);
@@ -664,7 +664,7 @@ $("ctoday").onclick=function(){
 $("cgrid").addEventListener("click",function(e){
   var b=e.target.closest("button"); if(!b)return;
   if(b.dataset.w){var wm=new Date(+b.dataset.w), sd=studyDay(new Date());pick(mondayOf(sd).getTime()===wm.getTime()?sd:wm);return;}
-  var d=new Date(+b.dataset.t); pick(d.getDay()===0?addDays(d,1):d);
+  var d=new Date(+b.dataset.t); pick(studyDay(d));
 });
 
 // Настройки
@@ -704,7 +704,7 @@ $("days").addEventListener("click",function(e){
   sel=addDays(mondayOf(sel),+b.dataset.i); renderFull();
 });
 // Свайп влево и вправо по списку пар листает дни
-function shiftDay(n){var d=addDays(sel,n);if(d.getDay()===0)d=addDays(d,n);sel=d;renderFull();}
+function shiftDay(n){var d=addDays(sel,n);while((d.getDay()+6)%7>=DAYS_N)d=addDays(d,n);sel=d;renderFull();}
 (function(){
   var el=$("list"), x0=null, y0=0, dx=0, lock=null;
   el.addEventListener("touchstart",function(e){x0=e.touches[0].clientX;y0=e.touches[0].clientY;dx=0;lock=null;el.style.transition="none";},{passive:true});
