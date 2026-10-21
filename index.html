@@ -308,7 +308,7 @@ a.btn[aria-busy="true"]{opacity:.6;pointer-events:none}
       <div class="seg" id="s-theme"><button data-v="system">Как в системе</button><button data-v="dark">Тёмная</button><button data-v="light">Светлая</button></div>
     </div>
     <div class="adm-err" id="admErr" role="alert" hidden></div>
-    <div class="actions"><a class="btn ghost" id="toAdmin" href="admin.html" hidden>Админка</a><button class="btn primary" data-close>Готово</button></div>
+    <div class="actions"><a class="btn ghost" id="toAdmin" href="admin.html">Админка</a><button class="btn primary" data-close>Готово</button></div>
   </div>
 </div>
 
@@ -785,8 +785,7 @@ function paintSettings(){
   [["s-ui",settings.ui],["s-theme",settings.theme]].forEach(function(p){
     Array.prototype.forEach.call($(p[0]).children,function(b){b.setAttribute("aria-pressed",b.dataset.v===p[1]?"true":"false");});
   });
-  // Кнопка админки видна только тем, кто уже входил в админку (и всегда в демо)
-  $("toAdmin").hidden=!(DEMO||getRaw(TOKEN_KEY));
+  // Кнопка админки видна всем: без ключа она ведёт на экран входа, с ключом сначала проверяет его
   $("admErr").hidden=true;
 }
 $("s-ui").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;
@@ -813,14 +812,14 @@ function checkAdmin(t){
 }
 $("toAdmin").addEventListener("click",function(e){
   var t=getRaw(TOKEN_KEY), b=this;
-  if(DEMO&&!t)return; // в демо ключ не нужен
+  if(!t)return; // ключа нет: просто открываем экран входа
   e.preventDefault();
   if(b.getAttribute("aria-busy")==="true")return;
   b.setAttribute("aria-busy","true"); b.textContent="Проверяю ключ"; $("admErr").hidden=true;
   checkAdmin(t||"").then(function(){location.href=b.href;}).catch(function(err){
     b.removeAttribute("aria-busy"); b.textContent="Админка";
     $("admErr").hidden=false; $("admErr").textContent=err.message;
-    if(!err.net){try{localStorage.removeItem(TOKEN_KEY);}catch(x){} if(!DEMO)b.hidden=true;}
+    if(!err.net){try{localStorage.removeItem(TOKEN_KEY);}catch(x){}}
   });
 });
 
