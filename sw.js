@@ -1,7 +1,7 @@
 // Офлайн-режим.
 // Свои файлы: сначала сеть (чтобы приходили обновления), но если сеть думает дольше 3 секунд, сразу отдаём из кэша.
 // Шрифты Google: сразу из кэша, а в фоне обновляем (файлы шрифтов не меняются).
-var CACHE = "pary-2576-v11";
+var CACHE = "pary-2576-v12";
 var CORE = ["./", "index.html", "manifest.webmanifest", "icon.png"];
 var WAIT = 3000;
 
@@ -15,7 +15,7 @@ self.addEventListener("activate", function (e) {
 });
 
 function put(req, r) {
-  if (r && (r.status === 200 || r.type === "opaque")) { var copy = r.clone(); caches.open(CACHE).then(function (c) { c.put(req, copy); }); }
+  if (r && (r.ok || r.type === "opaque")) { var copy = r.clone(); caches.open(CACHE).then(function (c) { c.put(req, copy); }); }
   return r;
 }
 function fromCache(req) {
