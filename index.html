@@ -342,7 +342,7 @@ a.btn[aria-busy="true"]{opacity:.6;pointer-events:none}
 // Всё расписание (звонки, пары, замены, отмены, сессия) лежит в schedule.json, его правит admin.html.
 // Последняя загруженная версия хранится в браузере: приложение открывается сразу и работает без сети.
 var SCHED_URL="schedule.json", CACHE_KEY="pary-2576-schedule-v1", DRAFT_KEY="pary-2576-draft-v1", TOKEN_KEY="pary-2576-admin-token";
-var DEMO=!/\.github\.io$/.test(location.hostname); // в демо админка сохраняет черновик только в браузере
+var DEMO=!/\.(github\.io|pages\.dev)$/.test(location.hostname); // на github.io и pages.dev это сайт, иначе демо: в демо админка сохраняет черновик только в браузере
 var FK="Физическая культура";
 var KINDS={exam:"Экзамен",credit:"Зачёт",consult:"Консультация",other:"Событие"};
 var KGEN={exam:"экзамена",credit:"зачёта",consult:"консультации",other:"события"};

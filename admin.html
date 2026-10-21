@@ -208,7 +208,7 @@ code{font-family:var(--font-m);font-size:13px;background:var(--bg);padding:1px 5
 // В демо (не на github.io) изменения сохраняются только в этом браузере как черновик.
 var REPO="CDN2041/raspisanie-MITSO", PATH="schedule.json";
 var API="https://api.github.com/repos/"+REPO+"/contents/"+PATH;
-var DEMO=!/\.github\.io$/.test(location.hostname);
+var DEMO=!/\.(github\.io|pages\.dev)$/.test(location.hostname); // сайт на GitHub Pages или Cloudflare Pages, всё остальное демо
 var TOKEN_KEY="pary-2576-admin-token", DRAFT_KEY="pary-2576-draft-v1", CACHE_KEY="pary-2576-schedule-v1", SKEY="pary-2576-settings-v1";
 var TYPES={lec:"Лекция",prac:"Практика",mix:"Лекция/Практика"};
 var WEEKS={all:"Каждую",over:"Над чертой",under:"Под чертой"};
