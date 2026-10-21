@@ -1,8 +1,8 @@
 // Офлайн-режим.
 // Свои файлы: сначала сеть (чтобы приходили обновления), но если сеть думает дольше 3 секунд, сразу отдаём из кэша.
 // Шрифты Google: сразу из кэша, а в фоне обновляем (файлы шрифтов не меняются).
-var CACHE = "pary-2576-v13";
-var CORE = ["./", "index.html", "manifest.webmanifest", "icon.png"];
+var CACHE = "pary-2576-v14";
+var CORE = ["./", "index.html", "schedule.json", "manifest.webmanifest", "icon.png"];
 var WAIT = 3000;
 
 self.addEventListener("install", function (e) {
@@ -33,6 +33,8 @@ self.addEventListener("fetch", function (e) {
     e.respondWith(caches.match(req).then(function (m) { return m || net; }));
     return;
   }
+  // Чужие адреса (например, GitHub API из админки) не трогаем
+  if (url.origin !== self.location.origin) return;
 
   var net2 = fetch(req).then(function (r) { return put(req, r); });
   e.waitUntil(net2.catch(function () {}));
