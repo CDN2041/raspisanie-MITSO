@@ -95,6 +95,8 @@ h1{font-family:var(--font-d);font-weight:700;font-size:28px;line-height:1.1;marg
 .t-lec{border-color:var(--muted)}
 .t-prac{background:var(--fg);color:var(--bg)}
 .t-mix{border-color:var(--fg)}
+.t-sub{border:1px dashed var(--fg)}
+.was{font-size:12px;color:var(--muted);overflow-wrap:anywhere}
 .subj{font-weight:600;font-size:16px;line-height:1.3;margin:0;overflow-wrap:anywhere}
 .who{color:var(--muted);font-size:14px;overflow-wrap:anywhere}
 .room{font-family:var(--font-m);font-size:13px}
@@ -365,6 +367,12 @@ var LESSONS = [
  {d:4,p:4,w:"all",  s:"Социология", t:"mix", tch:"ст. пр. Любочко Н. А.", r:"4-2"}
 ];
 
+// Замены на конкретный день: пара с тем же номером заменяется, новая добавляется.
+// was: что стояло по расписанию (показывается под карточкой). Старые замены можно не удалять.
+var SUBS = {
+ "2026-10-22": [{p:2, s:EI, t:"mix", tch:"ст. пр. Емельянченко Я. В.", r:"3-4", was:"ОПД, ст. пр. Сенько И. В."}]
+};
+
 // ---------- Справочники ----------
 var DSHORT=["Пн","Вт","Ср","Чт","Пт"];
 var DAYS_FULL=["Воскресенье","Понедельник","Вторник","Среда","Четверг","Пятница","Суббота"];
@@ -400,10 +408,14 @@ function fmtRange(mon){var sat=addDays(mon,DAYS_N-1);
 var BYDAY=[[],[],[],[],[]];
 LESSONS.forEach(function(l){l.a=toMin(PAIRS[l.p][0]);l.b=toMin(PAIRS[l.p][1]);BYDAY[l.d].push(l);});
 BYDAY.forEach(function(a){a.sort(function(x,y){return x.p-y.p;});});
+for(var sk in SUBS)SUBS[sk].forEach(function(l){l.a=toMin(PAIRS[l.p][0]);l.b=toMin(PAIRS[l.p][1]);l.sub=true;});
 function lessonsFor(d){
   var wd=(d.getDay()+6)%7; if(wd>=DAYS_N||d>LAST)return [];
-  var wt=weekType(d);
-  return BYDAY[wd].filter(function(l){return l.w==="all"||l.w===wt;});
+  var wt=weekType(d), sub=SUBS[key(d)];
+  var list=BYDAY[wd].filter(function(l){return l.w==="all"||l.w===wt;});
+  if(!sub)return list;
+  var ps={}; sub.forEach(function(l){ps[l.p]=1;});
+  return list.filter(function(l){return !ps[l.p];}).concat(sub).sort(function(x,y){return x.p-y.p;});
 }
 
 // ---------- Хранилище ----------
@@ -424,7 +436,7 @@ function dayHasNote(d){return !!noteDays[key(d)];}
 
 // ---------- Общие куски разметки ----------
 var TAGS={lec:'<span class="tag t-lec">Лекция</span>',prac:'<span class="tag t-prac">Практика</span>',mix:'<span class="tag t-mix">Лекция/Практика</span>'};
-function tagHtml(l){return TAGS[l.t]||"";}
+function tagHtml(l){return (TAGS[l.t]||"")+(l.sub?'<span class="tag t-sub">Замена</span>':"");}
 function pairBar(s,e,m){ // 40 мин, перерыв 5 мин, 40 мин
   var h1=s+40,h2=s+45, f1=Math.min(1,(m-s)/40), fb=m<h1?0:Math.min(1,(m-h1)/5), f2=m<h2?0:(m-h2)/(e-h2);
   var pc=function(f){return Math.round(Math.max(0,f)*100)+"%";};
@@ -465,6 +477,7 @@ function lessonCard(l,cmp,m){
     +'<div class="body"><div class="tags">'+tagHtml(l)+'</div>'
     +'<p class="subj">'+esc(l.s)+'</p>'
     +(l.tch?'<div class="who">'+esc(l.tch)+'</div>':'')
+    +(l.was?'<div class="was">Вместо: '+esc(l.was)+'</div>':'')
     +(l.r?'<div class="room"><small>ауд. </small>'+esc(l.r)+'</div>':'')
     +prog+(hn?'<div class="peek">'+I_PEN+'<span>'+esc(nt.split("\n")[0])+'</span></div>':'')+'</div></article>';
 }
