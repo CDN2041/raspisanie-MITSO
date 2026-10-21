@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
-<title>Админка расписания</title>
+<title>Редактор расписания</title>
 <link rel="icon" type="image/png" href="icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -163,7 +163,7 @@ code{font-family:var(--font-m);font-size:13px;background:var(--bg);padding:1px 5
     <a class="back" href="./"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg>К расписанию</a>
     <div class="who" id="who"></div>
   </div>
-  <h1>Админка</h1>
+  <h1>Редактор</h1>
 
   <section id="login" class="card" hidden>
     <h2>Вход</h2>
@@ -391,13 +391,13 @@ function checkToken(t){
     var scopes=r.headers.get("X-OAuth-Scopes");
     return r.json().then(function(j){
       var p=j.permissions||{};
-      if(!(p.push||p.admin||p.maintain))throw new Error("Ключ настоящий, но этот аккаунт не админ: его нет в соавторах репозитория. Попросите владельца добавить вас.");
+      if(!(p.push||p.admin||p.maintain))throw new Error("Ключ настоящий, но у этого аккаунта нет доступа к редактору: его нет в соавторах репозитория. Попросите владельца добавить вас.");
       if(scopes!==null&&t.indexOf("ghp_")===0&&!/(^|,\s*)(public_repo|repo)(\s*,|$)/.test(scopes))throw new Error("У ключа не отмечено право public_repo, сохранять он не сможет. Создайте ключ заново кнопкой выше.");
       return fetch("https://api.github.com/user",{headers:H,cache:"no-store"}).then(function(u){return u.ok?u.json():{};}).then(function(u){return {login:u.login||""};});
     });
   },function(e){if(e&&e.message&&/ключ|GitHub|админ|право/i.test(e.message))throw e;throw new Error("Нет связи с GitHub. Проверьте интернет и попробуйте ещё раз.");});
 }
-$("mktok").href="https://github.com/settings/tokens/new?scopes=public_repo&description="+encodeURIComponent("Админка расписания 2576-ЭБ");
+$("mktok").href="https://github.com/settings/tokens/new?scopes=public_repo&description="+encodeURIComponent("Редактор расписания 2576-ЭБ");
 function loginError(msg){$("lok").hidden=true;$("lerr").hidden=false;$("lerr").textContent=msg;}
 
 // В демо после проверки ключа расписание берётся из черновика или schedule.json, сохраняется тоже в черновик
@@ -429,7 +429,7 @@ $("lbtn").onclick=function(){
   if(!t){loginError("Вставьте ключ");return;}
   $("lbtn").disabled=true; $("lerr").hidden=true; $("lok").hidden=true; $("lbtn").textContent="Проверяю";
   checkToken(t).then(function(u){
-    $("lok").hidden=false;$("lok").textContent="Ключ подходит"+(u.login?": @"+u.login:"")+". Открываю админку";
+    $("lok").hidden=false;$("lok").textContent="Ключ подходит"+(u.login?": @"+u.login:"")+". Открываю редактор";
     lsSet(TOKEN_KEY,t); setTimeout(function(){location.reload();},500);
   }).catch(function(e){loginError(e.message);})
   .then(function(){$("lbtn").disabled=false;$("lbtn").textContent="Войти";});
@@ -848,7 +848,7 @@ $("main").addEventListener("click",function(e){
   else if(a==="addbrk"){var bb=data.bells[+b.dataset.i], s0=toMin(bb[0]), m0=s0+Math.floor((toMin(bb[1])-s0-5)/2);bb[2]=fmtMin(m0);bb[3]=fmtMin(m0+5);dirty();}
   else if(a==="delbrk"){data.bells[+b.dataset.i].length=2;dirty();}
   else if(a==="reset"){ask("Сбросить черновик?","Демо вернётся к расписанию из файла.",function(){lsSet(DRAFT_KEY,null);location.reload();},"Сбросить");}
-  else if(a==="logout"){ask("Выйти из админки?","Ключ удалится с этого устройства.",function(){lsSet(TOKEN_KEY,null);location.reload();},"Выйти");}
+  else if(a==="logout"){ask("Выйти из редактора?","Ключ удалится с этого устройства.",function(){lsSet(TOKEN_KEY,null);location.reload();},"Выйти");}
 });
 
 start();
